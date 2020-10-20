@@ -32,6 +32,13 @@ class App extends Component{
     this.igual = this.igual.bind(this);
     this.apagaTudo= this.apagaTudo.bind(this);
     this.apagaCurrent= this.apagaCurrent.bind(this);
+    this.addMem= this.addMem.bind(this);
+    this.recupMem= this.recupMem.bind(this);
+    this.apagaTudoMem= this.apagaTudoMem.bind(this);
+    this.apagaUltimoMem= this.apagaUltimoMem.bind(this);
+    this.somaTopoMem= this.somaTopoMem.bind(this);
+    this.apagaUmMem= this.apagaUmMem.bind(this);
+    this.recebeUmMem= this.recebeUmMem.bind(this);
     }
 
 
@@ -109,7 +116,84 @@ class App extends Component{
       }
       );
   }
+  addMem() {
+    console.log(this.state.listaMem)
+    this.setState((state) => {
+      const {currentOperand, listaMem} = state;
+      const lista = listaMem.slice();
+      const cur = parseFloat(currentOperand);
+      lista.unshift(cur)
+      return{
+        listaMem: lista
+      }
+    }
+    );
+  }
 
+  recupMem(){
+    this.setState((state) => {
+      const {listaMem} = state;
+      const primeiro =listaMem.slice(0)[0];
+      return{
+        currentOperand: parseFloat(primeiro)
+      }
+    }
+    );
+  }
+
+  apagaTudoMem(){
+    this.setState(
+      {
+        listaMem: []
+      }
+    );
+  }
+
+  apagaUltimoMem(){
+    this.setState((state) => {
+    const {listaMem} = state;
+    const lista = listaMem.slice();
+    lista.pop();
+    return{
+      listaMem: lista
+    }
+    }
+    );
+  }
+
+  somaTopoMem(){
+    this.setState((state) => {
+      const {currentOperand,listaMem} = state;
+      const lista = listaMem.slice();
+      const topo = listaMem.slice(0)[0] + parseFloat(currentOperand);
+      lista.shift();
+      lista.unshift(topo);
+      return{
+        listaMem: lista
+      }
+    }
+    );
+  }
+
+  apagaUmMem(el){
+    this.setState((state) => {
+      const {listaMem} = state;
+      const pilha = listaMem.slice()
+      pilha.splice(pilha.indexOf(el), 1);
+      return{
+        listaMem: pilha
+      }
+    }
+    );
+  }
+  
+  recebeUmMem(el){
+    this.setState( 
+      {
+        currentOperand: el
+      }
+    );
+  }
 
 
   compute(num_at,operat) {
@@ -151,6 +235,25 @@ class App extends Component{
             <Button text="*" click={() => this.compute(this.state.currentOperand,'*')}/>
             <Button text="=" click={() => this.igual(this.state.currentOperand,this.state.previous,this.state.operation)}/>
             <Button text="C" click={() => this.apagaTudo()}/>
+            <Button text="ME" click={() => this.addMem()}/>
+            <Button text="MR" click={() => this.recupMem()}/>
+            <Button text="MA" click={() => this.apagaTudoMem()}/>
+            <Button text="MU" click={() => this.apagaUltimoMem()}/>
+            <Button text="M+" click={() => this.somaTopoMem()}/>
+          </div>
+          <div class="lista">
+            <h3> Memória </h3>
+            {
+                this.state.listaMem.map(
+                  (el) =>
+                  <div class="listaDisplay"> 
+                    <Button text="MC" click={() => this.apagaUmMem(el)}/> 
+                    {el} 
+                    <Button text="MR" click={() => this.recebeUmMem(el)}/> 
+                  </div>
+
+                )
+              }
           </div>
         </div>
       </div>
